@@ -79,3 +79,33 @@ export const login = async (req: Request, res: Response) => {
     })
   }
 }
+
+//When accecss token is expired , verify refresh token => generate new access token
+export const generateNewToken = async (req: Request, res: Response) => {
+    try {
+      const userId = req.user;
+
+      const newAccessToken = await generateAccessToken(userId);
+      const newRefreshToken = await generateRefreshToken(userId);
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: false, // In development, set to false
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      })
+
+      res.status(200).json({
+        message: "send new access token sucessfully",
+        success: true,
+        newAccessToken
+      })
+
+    } catch (error: any) {
+      console.log(error.message);
+      res.status(500).json({
+        message: error.message,
+        success: false
+      })
+    }
+}
