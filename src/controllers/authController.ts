@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "~/models/User";
 import bcrypt from 'bcrypt'
+import { generateAccessToken, generateRefreshToken } from "~/utils/generateToken";
 
 //register controller
 export const register = async (req: Request, res: Response) => {
@@ -31,7 +32,10 @@ export const register = async (req: Request, res: Response) => {
 
   } catch (error: any) {
     console.log(error.message);
-    res.status(500).json({message: error.message});
+    res.status(500).json({
+      message: error.message,
+      success: false
+    });
   }
 }
 
@@ -39,9 +43,39 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
+  const user = await User.findOne({email});
+
   try {
-    
-  } catch (error) {
-    
+    if (!user) {
+       res.status(400).json({ message: "Invalid credentials" });
+       return;
+    }
+
+    const accessToken = await generateAccessToken(user._id);
+    const refreshToken = await generateRefreshToken(user._id)
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false, // In development, set to false
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    res.status(200).json({
+      message: "Login successfully",
+      success: true,
+      user,
+      accessToken
+    });
+
+  } catch (error: any) {
+    console.log(error.message);
+    res.status(500).json({
+      message: error.message,
+      success: false
+    })
   }
 }
