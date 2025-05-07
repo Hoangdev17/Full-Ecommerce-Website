@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({
   weight: ["400", "700"],
@@ -10,14 +13,6 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
 });
-
-// const geistMono = Geist_Mono({
-//   weight: ["400", "700"],
-//   style: ["normal"],
-//   subsets: ["latin"],
-//   variable: "--font-geist-mono",
-//   display: "swap",
-// });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -33,10 +28,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable}`}>
         <Navbar />
-        <div className="pt-[120px]">
+        <div>
           {children}
         </div>
+        <Footer />
+        <ToastContainer position="top-right" autoClose={3000} />
       </body>
+      
     </html>
   );
 }

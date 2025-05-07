@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="px-4 py-6 ">
+    <div className="px-4 py-6 pt-[130px]">
 
       <section className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row gap-6">
