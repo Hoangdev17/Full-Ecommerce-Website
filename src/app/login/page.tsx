@@ -1,14 +1,18 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Button, Typography, Link } from '@mui/material';
 import { FaGoogle } from 'react-icons/fa';
 import { login } from '../service/authService';
+import { loginState } from '@/app/redux/authSlice'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const LoginPage = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -20,7 +24,14 @@ const LoginPage = () => {
 
     try {
       const res = await login(formData);
-      console.log("Login data", res.data);
+
+      await dispatch(loginState({
+        user: res.data.user,
+        token: res.data.accessToken
+      }));
+
+      localStorage.setItem("accessToken", res.data.accessToken);
+
       toast.success("Login successfully");
       router.push("/");
     } catch (error: any) {

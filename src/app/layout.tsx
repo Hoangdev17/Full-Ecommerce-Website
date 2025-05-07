@@ -3,8 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ClientProvider from "./providers/ClientProvider";
 
 const inter = Inter({
   weight: ["400", "700"],
@@ -26,13 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable}`}>
-        <Navbar />
-        <div>
-          {children}
-        </div>
-        <Footer />
-        <ToastContainer position="top-right" autoClose={3000} />
+      <body className={inter.variable}>
+        <ClientProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </ClientProvider>
       </body>
       
     </html>

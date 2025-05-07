@@ -1,7 +1,9 @@
 'use client'
 
 import { Image } from "antd";
-import Link from "next/link";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "./store/store";
 
 export default function Home() {
   return (
